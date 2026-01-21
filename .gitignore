@@ -1,2 +1,5 @@
 *.o
+*.dSYM
+a.out
 libftdprintf.a
+main.c
