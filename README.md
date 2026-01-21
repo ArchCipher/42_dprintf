@@ -96,23 +96,23 @@ int ft_vdprintf(int fd, const char *fmt, va_list ap);
 
 ### Core Components
 
-**1. Format Parser (`ft_parser.c`)**
+**1. Format Parser ([`ft_parser.c`](ft_parser.c))**
 - Parses format string character by character
 - Extracts flags, width, precision, and specifier
 - Handles edge cases and invalid formats
 
-**2. Type Handlers (`ft_print_types.c`)**
-- `ft_print_char`: Single character output
-- `ft_print_str`: String output with width/precision
+**2. Type Handlers ([`ft_print_types.c`](ft_print_types.c))**
+- [`ft_print_char`](ft_print_types.c#L23): Single character output
+- [`ft_print_str`](ft_print_types.c#L48): String output with width/precision
 - Handles NULL pointers and empty strings
 
-**3. Integer Conversion (`ft_print_int.c`)**
+**3. Integer Conversion ([`ft_print_int.c`](ft_print_int.c))**
 - Converts integers to strings in various bases
 - Handles signed/unsigned correctly
 - Formats with flags, width, and precision
 - Efficient buffer management
 
-**4. Utilities (`ft_printf_utils.c`)**
+**4. Utilities ([`ft_printf_utils.c`](ft_printf_utils.c))**
 - Helper functions for parsing and conversion
 - String manipulation utilities
 - Number parsing functions
@@ -134,37 +134,6 @@ The `%p` specifier outputs NULL pointers differently on Linux vs macOS:
 ```
 
 This ensures compatibility with platform-specific printf behavior.
-
----
-
-## Usage Examples
-
-```c
-#include "ft_dprintf.h"
-#include <fcntl.h>
-
-int main(void)
-{
-    // Write to stdout
-    ft_dprintf(STDOUT_FILENO, "Hello, %s!\n", "World");
-    
-    // Write to stderr
-    ft_dprintf(STDERR_FILENO, "Error: %s\n", "Something went wrong");
-    
-    // Write to file
-    int fd = open("output.txt", O_WRONLY | O_CREAT, 0644);
-    ft_dprintf(fd, "File content: %d\n", 42);
-    close(fd);
-    
-    // Using vdprintf for custom wrappers
-    va_list ap;
-    va_start(ap, fmt);
-    int count = ft_vdprintf(fd, fmt, ap);
-    va_end(ap);
-    
-    return (0);
-}
-```
 
 ---
 
@@ -190,22 +159,7 @@ The library is compiled into `libftdprintf.a`.
 
 ## Integration with ft_printf
 
-This library is designed to be used by `ft_printf`:
-
-```c
-// In ft_printf.c
-int ft_printf(const char *fmt, ...)
-{
-    va_list ap;
-    int count;
-    
-    va_start(ap, fmt);
-    count = ft_vdprintf(STDOUT_FILENO, fmt, ap);
-    va_end(ap);
-    
-    return (count);
-}
-```
+This library is designed to be used by `ft_printf`. See [`../printf/ft_printf.c`](../printf/ft_printf.c) for the implementation that wraps `ft_dprintf` with `STDOUT_FILENO`.
 
 This modular approach allows:
 - Code reuse between `printf` and `dprintf`
